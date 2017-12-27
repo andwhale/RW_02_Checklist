@@ -10,6 +10,18 @@ import UIKit
 
 class ChecklistViewController: UITableViewController {
     
+    @IBAction func addItem() {
+        print("Added item")
+        let newRowIndex = items.count
+        let newItem = ChecklistItem()
+        newItem.text = "New row"
+        items.append(newItem)
+        
+        let indexPath = IndexPath(row: newRowIndex, section: 0)
+        let indexPaths = [indexPath]
+        tableView.insertRows(at: indexPaths, with: .automatic)
+    }
+    
     var items: [ChecklistItem]
     
     required init?(coder aDecoder: NSCoder) {
@@ -51,7 +63,7 @@ class ChecklistViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        //navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     override func didReceiveMemoryWarning() {
