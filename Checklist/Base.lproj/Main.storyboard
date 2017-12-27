@@ -44,7 +44,7 @@
                     <navigationItem key="navigationItem" title="Checklists" id="mav-X0-RbJ">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="aWN-oe-XQL">
                             <connections>
-                                <action selector="addItem" destination="aYW-TC-NFG" id="qMA-lX-Ao7"/>
+                                <segue destination="vVO-qa-SIW" kind="show" id="cak-PB-SsX"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -52,6 +52,69 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XfB-bQ-WrH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="508.125" y="121.47887323943662"/>
+        </scene>
+        <!--Add Item-->
+        <scene sceneID="CtG-Bo-xRB">
+            <objects>
+                <tableViewController id="vVO-qa-SIW" customClass="AddItemViewController" customModule="Checklist" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="lTq-CE-hoO">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection id="by6-Ax-5AF">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="tKR-4I-IHB">
+                                        <rect key="frame" x="0.0" y="35" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tKR-4I-IHB" id="Mfp-QY-tKd">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter todo" textAlignment="natural" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DmD-FJ-eh2">
+                                                    <rect key="frame" x="16" y="6" width="288" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                                    <connections>
+                                                        <action selector="save" destination="vVO-qa-SIW" eventType="editingDidEndOnExit" id="atn-a9-qAp"/>
+                                                    </connections>
+                                                </textField>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="vVO-qa-SIW" id="g77-VZ-7dE"/>
+                            <outlet property="delegate" destination="vVO-qa-SIW" id="o81-ZQ-CP7"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Add Item" id="G1x-S8-7JE">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="1pN-7N-JLB">
+                            <connections>
+                                <action selector="cancel" destination="vVO-qa-SIW" id="7mN-De-sk5"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="0zo-Jp-70O">
+                            <connections>
+                                <action selector="save" destination="vVO-qa-SIW" id="HuR-57-lKF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="cancelBarButton" destination="1pN-7N-JLB" id="5F9-Cr-hFn"/>
+                        <outlet property="saveBarButton" destination="0zo-Jp-70O" id="QxH-wg-B8H"/>
+                        <outlet property="textField" destination="DmD-FJ-eh2" id="bOH-SX-Obf"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cRR-VU-iEo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1271.25" y="119.36619718309859"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="dL5-Ia-1QQ">
@@ -72,4 +135,5 @@
             <point key="canvasLocation" x="-233" y="121"/>
         </scene>
     </scenes>
+    <color key="tintColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
 </document>

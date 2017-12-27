@@ -10,19 +10,21 @@ import UIKit
 
 class ChecklistViewController: UITableViewController {
     
+    var items: [ChecklistItem]
+    
     @IBAction func addItem() {
         print("Added item")
         let newRowIndex = items.count
         let newItem = ChecklistItem()
-        newItem.text = "New row"
+        let randomNumber = Int(arc4random_uniform(UInt32(items.count)))
+        newItem.text = items[randomNumber].text
+        newItem.checked = true
         items.append(newItem)
         
         let indexPath = IndexPath(row: newRowIndex, section: 0)
         let indexPaths = [indexPath]
         tableView.insertRows(at: indexPaths, with: .automatic)
     }
-    
-    var items: [ChecklistItem]
     
     required init?(coder aDecoder: NSCoder) {
         
@@ -66,9 +68,18 @@ class ChecklistViewController: UITableViewController {
         //navigationController?.navigationBar.prefersLargeTitles = true
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        print("Deleted row")
+        items.remove(at: indexPath.row)
+        print(items.count)
+        
+        //delete
+        //with animation
+        let indexPaths = [indexPath]
+        tableView.deleteRows(at: indexPaths, with: .automatic)
+        print("Updated view")
+        //without animation
+//        tableView.reloadData()
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
