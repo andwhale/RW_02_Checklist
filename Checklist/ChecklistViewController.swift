@@ -8,23 +8,50 @@
 
 import UIKit
 
-class ChecklistViewController: UITableViewController {
-    
+class ChecklistViewController: UITableViewController, ItemDetailViewControllerDelegate {
+
     var items: [ChecklistItem]
     
-    @IBAction func addItem() {
-        print("Added item")
-        let newRowIndex = items.count
-        let newItem = ChecklistItem()
-        let randomNumber = Int(arc4random_uniform(UInt32(items.count)))
-        newItem.text = items[randomNumber].text
-        newItem.checked = true
-        items.append(newItem)
-        
-        let indexPath = IndexPath(row: newRowIndex, section: 0)
-        let indexPaths = [indexPath]
-        tableView.insertRows(at: indexPaths, with: .automatic)
+    func itemDetailViewControllerDidCancel(_ controller: ItemDetailViewController) {
+        navigationController?.popViewController(animated: true)
     }
+    
+    func itemDetailViewControllerDidAdd(_ controller: ItemDetailViewController, didFinishAdding item: ChecklistItem) {
+        let newRowIndexPath = IndexPath(row: items.count, section: 0)
+        items.append(item)
+        let newRowIndexPaths = [newRowIndexPath]
+        tableView.insertRows(at: newRowIndexPaths, with: .automatic)
+        
+        navigationController?.popViewController(animated: true)
+    }
+    func itemDetailViewControllerDidEdit(_ controller: ItemDetailViewController, didFinishEditing item: ChecklistItem) {
+        if let index = items.index(of: item) {
+            let indexPath = IndexPath(row: index, section: 0)
+            if let cell = tableView.cellForRow(at: indexPath) {
+                configureText(for: cell, with: item)
+                configureCheckmark(for: cell, with: item)
+            }
+        }
+        //tableView.reloadData()
+        
+        navigationController?.popViewController(animated: true)
+    }
+    
+    
+    //replaced with segue
+//    @IBAction func addItem() {
+//        print("Added item")
+//        let newRowIndex = items.count
+//        let newItem = ChecklistItem()
+//        let randomNumber = Int(arc4random_uniform(UInt32(items.count)))
+//        newItem.text = items[randomNumber].text
+//        newItem.checked = true
+//        items.append(newItem)
+//
+//        let indexPath = IndexPath(row: newRowIndex, section: 0)
+//        let indexPaths = [indexPath]
+//        tableView.insertRows(at: indexPaths, with: .automatic)
+//    }
     
     required init?(coder aDecoder: NSCoder) {
         
@@ -62,10 +89,26 @@ class ChecklistViewController: UITableViewController {
         
         super.init(coder: aDecoder)
     }
+    
+    //general method
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //a segue identifier may be set in a storyboard
+        if segue.identifier == "AddItem" {
+            //segue has a property 'destination' for a destination view controller
+            let controller = segue.destination as! ItemDetailViewController
+            controller.delegate = self
+        } else if segue.identifier == "EditItem" {
+            let controller = segue.destination as! ItemDetailViewController
+            controller.delegate = self
+            if let indexPath = tableView.indexPath(for: sender as! UITableViewCell) {
+                controller.itemToEdit = items[indexPath.row]
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -92,7 +135,7 @@ class ChecklistViewController: UITableViewController {
 //            item.checked = !item.checked //this is what ChecklistItem itself must do (below)
             item.toggleChecked()
             
-            configureCheckmark(for: cell, with: items[indexPath.row])
+            configureCheckmark(for: cell, with: item)
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
@@ -112,10 +155,20 @@ class ChecklistViewController: UITableViewController {
     }
     
     func configureCheckmark(for cell: UITableViewCell, with item: ChecklistItem) {
+        let label = cell.viewWithTag(1001) as! UILabel
         if item.checked {
-            cell.accessoryType = .checkmark
+            label.text = "•"
+            print("•")
         } else {
-            cell.accessoryType = .none
+            label.text = ""
+        }
+        //turn text to gray on if item.checked
+        let label2 = cell.viewWithTag(1000) as! UILabel
+        if item.checked {
+            label2.textColor = UIColor.gray
+            print("Changed textColor")
+        } else {
+            label2.textColor = nil
         }
     }
     

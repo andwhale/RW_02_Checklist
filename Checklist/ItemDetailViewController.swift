@@ -8,11 +8,24 @@
 
 import UIKit
 
-class AddItemViewController: UITableViewController, UITextFieldDelegate{
+//protocol defines things that a class must implement; you can't create an instance of a protocol
+// : class restricts to class objects
+// we need to also add a property for a delegate that is the object that is going to carry these methods
+protocol ItemDetailViewControllerDelegate: class {
+    func itemDetailViewControllerDidCancel(_ controller: ItemDetailViewController)
+    func itemDetailViewControllerDidAdd(_ controller: ItemDetailViewController, didFinishAdding item: ChecklistItem)
+    func itemDetailViewControllerDidEdit(_ controller: ItemDetailViewController, didFinishEditing item: ChecklistItem)
+}
+
+class ItemDetailViewController: UITableViewController, UITextFieldDelegate {
 
     @IBOutlet weak var cancelBarButton: UIBarButtonItem!
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
     @IBOutlet weak var textField: UITextField!
+    var itemToEdit: ChecklistItem?
+    
+    //a delegate property
+    weak var delegate: ItemDetailViewControllerDelegate?
     
     override func viewWillAppear(_ animated: Bool) {
         textField.becomeFirstResponder()
@@ -23,7 +36,13 @@ class AddItemViewController: UITableViewController, UITextFieldDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.largeTitleDisplayMode = .never
         textField.delegate = self //or via storyboard: r-click on textfield and select delegate -> ViewController
+        
+        if let item = itemToEdit {
+            title = "Edit Item"
+            textField.text = item.text
+        }
     }
     
     //what to do when RETURN is hit
@@ -34,13 +53,23 @@ class AddItemViewController: UITableViewController, UITextFieldDelegate{
 //    }
     
     @IBAction func cancel() {
-        navigationController?.popViewController(animated: true)
+        //navigationController?.popViewController(animated: true)
         print("Canceled new item")
+        delegate?.itemDetailViewControllerDidCancel(self)
     }
     
     @IBAction func save() {
-        navigationController?.popViewController(animated: true)
-        print("Saved new item: \(textField.text!)")
+        if itemToEdit == nil {
+            let item = ChecklistItem()
+            item.text = textField.text!
+            item.checked = false
+            print("Saved new item: \(textField.text!)")
+            delegate?.itemDetailViewControllerDidAdd(self, didFinishAdding: item)
+        } else {
+            print("Edited item: \(itemToEdit!.text) -> \(textField.text!)")
+            itemToEdit?.text = textField.text!
+            delegate?.itemDetailViewControllerDidEdit(self, didFinishEditing: itemToEdit!)
+        }
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
